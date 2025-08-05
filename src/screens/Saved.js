@@ -55,7 +55,7 @@ const Saved = () => {
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.container}>
           <View style={styles.header}>
-            <Text style={styles.title}>🎨 Just Me & the City</Text>
+            <Text style={styles.title}>🖼️ My Drawings</Text>
             <TouchableOpacity
               activeOpacity={0.7}
               onPress={() => navigation.goBack()}

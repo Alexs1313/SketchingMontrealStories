@@ -19,7 +19,7 @@ const Onboard = () => {
   useEffect(() => {
     setTimeout(() => {
       setShowButton(true);
-    }, 2000);
+    }, 1400);
   }, []);
 
   return (
