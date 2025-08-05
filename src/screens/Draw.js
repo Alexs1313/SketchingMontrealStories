@@ -8,11 +8,10 @@ import {
   View,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import LinearGradient from 'react-native-linear-gradient';
 
 import AppBackground from '../components/AppBackground';
-import { articles } from '../data/articles';
 import { cities } from '../data/cities';
-import LinearGradient from 'react-native-linear-gradient';
 
 const { height } = Dimensions.get('window');
 
@@ -21,7 +20,7 @@ const Draw = () => {
 
   return (
     <AppBackground>
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.container}>
           <View style={styles.header}>
             <Text style={styles.title}>🎨 Just Me & the City</Text>
@@ -35,10 +34,7 @@ const Draw = () => {
 
           <View style={styles.wrapper}>
             {cities.map((city, idx) => (
-              <View
-                style={{ width: '48%', height: 248, marginBottom: 45 }}
-                key={idx}
-              >
+              <View style={styles.citiesWrap} key={idx}>
                 <Image source={city.image} style={styles.image} />
                 <TouchableOpacity
                   style={{}}
@@ -119,6 +115,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#fff',
   },
+  citiesWrap: { width: '48%', height: 248, marginBottom: 45 },
 });
 
 export default Draw;

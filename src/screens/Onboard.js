@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import {
   Dimensions,
   ImageBackground,
+  ScrollView,
   StyleSheet,
   Text,
   View,
@@ -18,7 +19,7 @@ const Onboard = () => {
   useEffect(() => {
     setTimeout(() => {
       setShowButton(true);
-    }, 3000);
+    }, 2000);
   }, []);
 
   return (
@@ -26,24 +27,28 @@ const Onboard = () => {
       source={require('../assets/images/onboardBg.png')}
       style={{ flex: 1 }}
     >
-      <View style={styles.container}>
-        <Text style={styles.title}>Welcome to Sketching Montreal Stories</Text>
-        <Text style={styles.subtitle}>
-          Where lines become laughter, and the city becomes your canvas.
-        </Text>
-        <Text style={styles.additionalText}>
-          {
-            ' Draw with friends.\n Wander solo with a sketch.\nDiscover the heartbeat of Montreal'
-          }
-        </Text>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <View style={styles.container}>
+          <Text style={styles.title}>
+            Welcome to Sketching Montreal Stories
+          </Text>
+          <Text style={styles.subtitle}>
+            Where lines become laughter, and the city becomes your canvas.
+          </Text>
+          <Text style={styles.additionalText}>
+            {
+              ' Draw with friends.\n Wander solo with a sketch.\nDiscover the heartbeat of Montreal'
+            }
+          </Text>
 
-        {showButton && (
-          <MediumButton
-            title={'🎉 Let’s Begin'}
-            onPress={() => navigation.replace('Home')}
-          />
-        )}
-      </View>
+          {showButton && (
+            <MediumButton
+              title={'🎉 Let’s Begin'}
+              onPress={() => navigation.replace('Home')}
+            />
+          )}
+        </View>
+      </ScrollView>
     </ImageBackground>
   );
 };

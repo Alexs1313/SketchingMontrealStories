@@ -1,6 +1,7 @@
 import { Dimensions, Image, ScrollView, StyleSheet, View } from 'react-native';
-import MediumButton from '../components/MediumButton';
 import { useNavigation } from '@react-navigation/native';
+
+import MediumButton from '../components/MediumButton';
 import AppBackground from '../components/AppBackground';
 
 const { height } = Dimensions.get('window');
@@ -10,7 +11,7 @@ const Home = () => {
 
   return (
     <AppBackground>
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.container}>
           <View style={{ left: '11%' }}>
             <Image source={require('../assets/images/home.png')} />
@@ -18,7 +19,7 @@ const Home = () => {
 
           <MediumButton
             title={'🖍️ Play Together'}
-            onPress={() => navigation.replace('Home')}
+            onPress={() => navigation.navigate('PlayTogether')}
           />
           <MediumButton
             title={'🎨 Just Me & the City'}

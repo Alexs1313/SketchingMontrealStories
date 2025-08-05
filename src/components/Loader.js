@@ -18,9 +18,11 @@ const Loader = () => {
 
   return (
     <AppBackground>
-      <View style={styles.container}>
-        {showImage && <Image source={require('../assets/images/home.png')} />}
-      </View>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <View style={styles.container}>
+          {showImage && <Image source={require('../assets/images/home.png')} />}
+        </View>
+      </ScrollView>
     </AppBackground>
   );
 };

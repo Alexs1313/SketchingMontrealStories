@@ -2,41 +2,52 @@ import {
   Dimensions,
   Image,
   ScrollView,
-  Share,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-
-import AppBackground from '../components/AppBackground';
 import Svg, { Path } from 'react-native-svg';
 import LinearGradient from 'react-native-linear-gradient';
+import ViewShot from 'react-native-view-shot';
+import { useRef } from 'react';
+import Share from 'react-native-share';
+
+import AppBackground from '../components/AppBackground';
 
 const { height } = Dimensions.get('window');
 
 const DrawDetails = ({ route }) => {
   const navigation = useNavigation();
-  const drawingPaths = route.params;
+  const { selectedWord, paths } = route.params;
+  const viewShotRef = useRef();
 
-  const handleShare = async () => {
+  const captureAndShare = async () => {
     try {
-      await Share.share({
-        message: `${name}
-${description}`,
-      });
+      const uri = await viewShotRef.current.capture();
+
+      const shareOptions = {
+        title: 'Share Drawing',
+        url: uri,
+        type: 'image/png',
+      };
+      await Share.open(shareOptions);
     } catch (error) {
-      alert(error.message);
+      if (error.message === 'User did not share') {
+        console.log('Share canceled by user');
+      } else {
+        console.error('error', error);
+      }
     }
   };
 
   return (
     <AppBackground>
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.container}>
           <View style={styles.header}>
-            <TouchableOpacity activeOpacity={0.7} onPress={handleShare}>
+            <TouchableOpacity activeOpacity={0.7} onPress={captureAndShare}>
               <Image source={require('../assets/icons/share.png')} />
             </TouchableOpacity>
 
@@ -51,26 +62,32 @@ ${description}`,
           <View style={styles.articleContainer}></View>
 
           <View style={styles.thumbnail}>
-            <Svg width="100%" height="100%" viewBox="-100 55 600 350">
-              {drawingPaths.map((d, i) => (
-                <Path
-                  key={i}
-                  d={d}
-                  stroke="red"
-                  strokeWidth={2}
-                  fill="none"
-                  strokeLinejoin="round"
-                  strokeLinecap="round"
-                />
-              ))}
-            </Svg>
+            <ViewShot
+              ref={viewShotRef}
+              options={{ format: 'png', quality: 1.0, result: 'tmpfile' }}
+              style={{ flex: 1 }}
+            >
+              <Svg width="100%" height="100%" viewBox="-100 55 600 350">
+                {paths.map((d, i) => (
+                  <Path
+                    key={i}
+                    d={d}
+                    stroke="red"
+                    strokeWidth={2}
+                    fill="none"
+                    strokeLinejoin="round"
+                    strokeLinecap="round"
+                  />
+                ))}
+              </Svg>
+            </ViewShot>
           </View>
 
           <LinearGradient
             colors={['#FB6029', '#FEAE06']}
             style={styles.gradientButton}
           >
-            <Text style={styles.btnText}>Black Forest Cake 🍰</Text>
+            <Text style={styles.btnText}>{selectedWord}</Text>
           </LinearGradient>
         </View>
       </ScrollView>

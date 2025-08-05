@@ -1,9 +1,9 @@
 import { Image, StyleSheet, Text, TouchableOpacity } from 'react-native';
 
-const MediumButton = ({ title, onPress }) => {
+const MediumButton = ({ title, onPress, style }) => {
   return (
     <TouchableOpacity
-      style={styles.button}
+      style={[styles.button, style]}
       activeOpacity={0.7}
       onPress={onPress}
     >

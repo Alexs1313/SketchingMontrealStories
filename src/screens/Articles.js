@@ -19,7 +19,7 @@ const Articles = () => {
 
   return (
     <AppBackground>
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.container}>
           <View style={styles.header}>
             <Text style={styles.title}>📘 City Reads</Text>

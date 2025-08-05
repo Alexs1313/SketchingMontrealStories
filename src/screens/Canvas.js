@@ -1,33 +1,36 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import {
   View,
   StyleSheet,
-  Button,
-  SafeAreaView,
-  PermissionsAndroid,
-  Platform,
-  ScrollView,
   Image,
   Dimensions,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import { PanResponder } from 'react-native';
 import Slider from '@react-native-community/slider';
-import AppBackground from '../components/AppBackground';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import Orientation from 'react-native-orientation-locker';
+
 import { useStore } from '../store/context';
+import AppBackground from '../components/AppBackground';
 
 const { height } = Dimensions.get('window');
 
 export default function Canvas({ route }) {
   const [paths, setPaths] = useState([]);
-  const { savedDrawings, setSavedDrawings } = useStore();
+  const { saveDrawing } = useStore();
   const currentPath = useRef('');
   const [opacity, setOpacity] = useState(1);
-  const viewShotRef = useRef(null);
   const selectedImage = route.params;
   const navigation = useNavigation();
+
+  useFocusEffect(
+    useCallback(() => {
+      Orientation.lockToPortrait();
+    }, []),
+  );
 
   const panResponder = PanResponder.create({
     onStartShouldSetPanResponder: () => true,
@@ -41,71 +44,73 @@ export default function Canvas({ route }) {
       currentPath.current = `M${locationX},${locationY} `;
       setPaths(prev => [...prev, currentPath.current]);
     },
-    onPanResponderRelease: () => {
-      // Finished drawing
-    },
+    onPanResponderRelease: () => {},
   });
-
-  const requestStoragePermission = async () => {
-    if (Platform.OS === 'android') {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-        {
-          title: 'Storage Permission',
-          message: 'App needs access to your storage to save drawings',
-          buttonNeutral: 'Ask Me Later',
-          buttonNegative: 'Cancel',
-          buttonPositive: 'OK',
-        },
-      );
-      return granted === PermissionsAndroid.RESULTS.GRANTED;
-    }
-    return true;
-  };
 
   const undoLast = () => {
     setPaths(prev => prev.slice(0, -1));
   };
 
-  const saveDrawing = () => {
+  const handleSaveDrawing = () => {
     if (paths.length === 0) return;
-    setSavedDrawings(prev => [...prev, paths]);
-    setPaths([]); // Clear current drawing after saving
+
+    const newDrawing = { paths, selectedWord: 'Draw', id: Date.now() };
+
+    saveDrawing(newDrawing);
+    setPaths([]);
   };
 
-  console.log('selectedImage', selectedImage);
+  const showConfirm = () => {
+    Alert.alert(
+      'Leave Drawing?',
+      `Your sketch will be lost if you exit now.`,
+      [
+        {
+          text: 'Stay',
+          style: 'cancel',
+        },
+        {
+          text: 'Leave',
+          onPress: () => {
+            navigation.goBack();
+          },
+        },
+      ],
+      { cancelable: false },
+    );
+  };
+
+  const handleGoBack = () => {
+    paths.length !== 0 ? showConfirm() : navigation.goBack();
+  };
 
   return (
     <AppBackground>
       <View style={styles.container}>
         <View style={styles.header}>
-          <TouchableOpacity activeOpacity={0.7} onPress={saveDrawing}>
+          <TouchableOpacity activeOpacity={0.7} onPress={handleSaveDrawing}>
             <Image source={require('../assets/images/components/save.png')} />
           </TouchableOpacity>
 
-          <TouchableOpacity
-            activeOpacity={0.7}
-            onPress={() => navigation.goBack()}
-          >
+          <TouchableOpacity activeOpacity={0.7} onPress={handleGoBack}>
             <Image source={require('../assets/icons/close.png')} />
           </TouchableOpacity>
         </View>
 
         <View style={styles.drawContainer}>
           <View style={styles.drawingArea} {...panResponder.panHandlers}>
-            {/* Background Image */}
             <Image
-              source={selectedImage.image} // <-- Replace with your image URL or local asset
+              source={selectedImage.image}
               style={[styles.backgroundImage, { opacity }]}
               resizeMode="cover"
             />
-            {/* SVG Drawing Layer */}
+
             <Svg style={StyleSheet.absoluteFill}>
               {paths.map((d, index) => (
                 <Path
                   key={index}
                   d={d}
-                  stroke="red"
+                  stroke="#FF5F29"
                   strokeWidth={3}
                   fill="none"
                   strokeLinejoin="round"
@@ -131,27 +136,6 @@ export default function Canvas({ route }) {
             />
           </View>
         </View>
-
-        {/* Render saved drawings */}
-        <ScrollView contentContainerStyle={styles.gallery}>
-          {savedDrawings.map((drawingPaths, index) => (
-            <View key={index} style={styles.thumbnail}>
-              <Svg width="100%" height="100%" viewBox="-150 100 600 350">
-                {drawingPaths.map((d, i) => (
-                  <Path
-                    key={i}
-                    d={d}
-                    stroke="red"
-                    strokeWidth={2}
-                    fill="none"
-                    strokeLinejoin="round"
-                    strokeLinecap="round"
-                  />
-                ))}
-              </Svg>
-            </View>
-          ))}
-        </ScrollView>
       </View>
     </AppBackground>
   );
@@ -203,17 +187,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ddd',
     backgroundColor: '#f9f9f9',
-  },
-
-  box: {
-    width: 200,
-    height: 200,
-    backgroundColor: 'blue',
-    marginBottom: 20,
-  },
-  text: {
-    fontSize: 18,
-    marginBottom: 10,
   },
   slider: {
     width: '80%',
