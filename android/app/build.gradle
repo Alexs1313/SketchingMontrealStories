@@ -79,7 +79,7 @@ android {
 
     namespace "com.sketchingmontrealstories"
     defaultConfig {
-        applicationId "app.cityguide.montrealcasino.experience.sketching.story"
+        applicationId "com.sketchingmontrealstories"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
