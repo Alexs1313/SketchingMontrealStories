@@ -24,6 +24,10 @@ workflows:
       - name: Set up provisioning profiles
         script: |
           xcode-project use-profiles
+      - name: Set iOS Build Number (CFBundleVersion)
+        script: |
+          echo "Setting build number to $BUILD_NUMBER"
+          /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $BUILD_NUMBER" ios/SketchingMontrealStories/Info.plist
       - name: Increment build number
         script: |
           cd ios
