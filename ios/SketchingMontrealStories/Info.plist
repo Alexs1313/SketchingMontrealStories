@@ -21,7 +21,14 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>6</string>
+	<string>8</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>fb</string>
+		<string>instagram</string>
+		<string>twitter</string>
+		<string>tiktoksharesdk</string>
+	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -39,13 +46,6 @@
 	<string>Need access to save photos when sharing</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>This app needs access to your photo library to select and display images.</string>
-	<key>LSApplicationQueriesSchemes</key>
-    <array>
-    <string>fb</string>
-    <string>instagram</string>
-    <string>twitter</string>
-    <string>tiktoksharesdk</string>
-    </array>
 	<key>RCTNewArchEnabled</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
