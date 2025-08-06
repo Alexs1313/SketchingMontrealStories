@@ -40,6 +40,12 @@ workflows:
       - $HOME/Library/Developer/Xcode/DerivedData//Build//*.app
       - $HOME/Library/Developer/Xcode/DerivedData//Build//*.dSYM
     publishing:
+      email:
+        recipients:
+          - aleshaalesha1313@gmail.com
+        notify:
+          success: true
+          failure: true
       app_store_connect:
         auth: integration
         submit_to_app_store: true
